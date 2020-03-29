@@ -1,0 +1,29 @@
+{
+  "persons": [
+      {
+          "name": "Aku Ankka",
+          "number": "131",
+          "id": 1
+      },
+      {
+          "name": "Iines Ankka",
+          "number": "131-232",
+          "id": 2
+      },
+      {
+          "name": "Roope Ankka",
+          "number": "$$$$",
+          "id": 3
+      },
+      {
+          "name": "Mary Poppins",
+          "number": "123 456",
+          "id": 4
+      },
+      {
+          "name": "Mary McDowel",
+          "number": "040-050",
+          "id": 5
+      }
+  ]
+}

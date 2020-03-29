@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import axios from 'axios';
 
 import AddForm from './components/AddForm';
 import Filter from './components/Filter';
@@ -8,24 +9,26 @@ import FilteredList from './components/FilteredList';
 import './index.css';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Aku Ankka', number: '131' },
-    { name: 'Iines Ankka', number: '131-232' },
-    { name: 'Roope Ankka', number: '$$$$' },
-    { name: 'Mary Poppins', number: '123 456' },
-    { name: 'Mary McDowel', number: '040-050' }
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [showList, setShowList] = useState([]);
 
-  const handleNameChange = e => {
-    setNewName(e.target.value);
-  }
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, []);
 
-  const handleNumberChange = e => {
-    setNewNumber(e.target.value);
-  }
+  const handleNameChange = e => (
+    setNewName(e.target.value)
+  )
+
+  const handleNumberChange = e => (
+    setNewNumber(e.target.value)
+  )
 
   const handleFilter = e => {
     const filter = e.target.value;
