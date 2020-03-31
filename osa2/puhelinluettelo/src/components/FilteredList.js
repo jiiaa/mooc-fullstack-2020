@@ -1,10 +1,10 @@
 import React from 'react';
 import Person from './Person';
 
-const FilteredList = ({ showList }) => (
+const FilteredList = ({ showList, handleDelete }) => (
     <div>
         {showList.map(person => (
-            <Person key={person.name} person={person} />
+            <Person key={person.name} person={person} handleDelete={handleDelete} />
         ))
         }
     </div>
