@@ -101,10 +101,13 @@ const App = () => {
           setNewNumber('');
         })
         .catch(error => {
-          console.log('addName error:', error);
+          console.log('addName error:', error.response.data);
+          setMessage(error.response.data.error);
+          setTimeout(() => {
+            setMessage(null);
+          }, 3000);
           setNewName('');
           setNewNumber('');
-
         })
     }
   }
