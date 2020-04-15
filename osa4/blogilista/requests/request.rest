@@ -1,0 +1,13 @@
+GET http://localhost:3003/api/blogs
+
+###
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Kuinka fatista fitiksi",
+  "author": "UP Helsinki",
+  "url": "uphelsinki.fi",
+  "likes": 28
+}
