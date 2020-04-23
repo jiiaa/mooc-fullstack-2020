@@ -108,7 +108,7 @@ describe('When the database is always initialized first...', () => {
   });
 
   describe('Editing a blog by updating the number of likes', () => {
-    test.only('succeeds with the updated blog data returned', async () => {
+    test('succeeds with the updated blog data returned', async () => {
       const blogsAtStart = await helper.getAllBlogs();
       const updateBlog = {
         title: blogsAtStart[1].title,
@@ -118,7 +118,7 @@ describe('When the database is always initialized first...', () => {
       };
 
       const updatedBlog = await api.put(`/api/blogs/${blogsAtStart[1].id}`).send(updateBlog);
-      expect(updatedBlog.ikes).toContain(updateBlog.likes);
+      expect(updatedBlog.body.likes).toEqual(updateBlog.likes);
     });
   });
 
