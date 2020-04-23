@@ -1,5 +1,6 @@
 const config = require('./utils/config');
 const express = require('express');
+require('express-async-errors');
 const app = express();
 const cors = require('cors');
 const blogsRouter = require('./controllers/blogs');
@@ -9,7 +10,7 @@ const mongoose = require('mongoose');
 
 logger.info('connecting to ', config.MONGO_URI);
 
-mongoose.connect(config.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(config.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
   .then(() => {
     logger.info('Connected to MongoDB');
   })
@@ -22,17 +23,6 @@ app.use(express.static('build'));
 app.use(express.json());
 app.use(middleware.requestLogger);
 app.use('/api/blogs', blogsRouter);
-
-// app.get('/api/blogs', (req, res) => {
-//   console.log('api/blogs');
-//   res.status(200).json({ message: 'All GET good' });
-// });
-
-// app.post('/api/blogs', (req, res) => {
-//   console.log('api/blogs', req.body);
-//   res.status(200).json({ message: 'All POST good' });
-// });
-
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
