@@ -1,9 +1,95 @@
 const supertest = require('supertest');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const helper = require('./test_helper');
 const app = require('../app');
 const api = supertest(app);
+const User = require('../models/user');
 const Blog = require('../models/blog');
+
+describe('When there is initially one user at the database', () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+
+    const pwHash = await bcrypt.hash('salasana', 10);
+    const user = new User({
+      username: 'root',
+      name: 'root user',
+      pwHash
+    });
+
+    await user.save();
+  });
+
+  test('Adding a new user with a fresh username succeeds', async () => {
+    const usersAtStart = await helper.getAllUsers();
+
+    const newUser = {
+      username: 'akuankka',
+      name: 'Aku Ankka',
+      password: 'salainen'
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const usersAtEnd = await helper.getAllUsers();
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
+    const usernames = usersAtEnd.map(u => u.username);
+    expect(usernames).toContain(newUser.username);
+  });
+
+  test('Adding a new user with the same username fails with proper error message', async () => {
+    const repeatUser = {
+      username: 'root',
+      name: 'User Root',
+      password: 'secret'
+    };
+
+    const result = await api
+      .post('/api/users')
+      .send(repeatUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body.error).toContain('`username` to be unique');
+  });
+
+  test('Adding a new user with a username less than 3 characters fails', async () => {
+    const invalidUser = {
+      username: 'ab',
+      name: 'too short username',
+      password: 'secret'
+    };
+
+    const result = await api
+      .post('/api/users')
+      .send(invalidUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body.error).toContain('Username or password is shorter than 3 characters');
+  });
+
+  test('Adding a new user with a password less than 3 characters fails', async () => {
+    const invalidUser = {
+      username: 'testuser',
+      name: 'test user',
+      password: 'a1'
+    };
+
+    const result = await api
+      .post('/api/users')
+      .send(invalidUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body.error).toContain('Username or password is shorter than 3 characters');
+  });
+});
 
 describe('When the database is always initialized first...', () => {
   beforeEach(async () => {
@@ -42,16 +128,22 @@ describe('When the database is always initialized first...', () => {
   });
 
   describe('Addition of a blog', () => {
-    test('Succeeds with a staus 201 and valid blog content', async () => {
+    test('Succeeds with a status 201 and valid blog content', async () => {
+      const allUsers = await helper.getAllUsers();
+      const oneUser = allUsers[0];
+      const token = await helper.getToken('root');
+
       const newBlog = {
         title: 'React patterns',
         author: 'Michael Chan',
         url: 'https://reactpatterns.com/',
         likes: 7,
+        userId: oneUser.id
       };
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}` )
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/);
@@ -63,30 +155,91 @@ describe('When the database is always initialized first...', () => {
       expect(titles).toContain('React patterns');
     });
 
+    test('without a token fails with a status 401', async () => {
+      const allUsers = await helper.getAllUsers();
+      const oneUser = allUsers[0];
+
+      const newBlog = {
+        title: 'React patterns',
+        author: 'Michael Chan',
+        url: 'https://reactpatterns.com/',
+        likes: 7,
+        userId: oneUser.id
+      };
+
+      const response = await api
+        .post('/api/blogs')
+        .set('Authorization', 'bearer' )
+        .send(newBlog)
+        .expect(401)
+        .expect('Content-Type', /application\/json/);
+
+      expect(response.body.error).toContain('Invalid token');
+    });
+
     test('With an undefined likes value sets the value to zero', async () => {
+      const allUsers = await helper.getAllUsers();
+      const oneUser = allUsers[0];
+      const token = await helper.getToken('root');
+
       const newBlog = {
         title: 'Go To Statement Considered Harmful',
         author: 'Edsger W. Dijkstra',
         url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/',
-        likes: null
+        likes: null,
+        userId: oneUser.id
       };
 
-      const response = await api.post('/api/blogs').send(newBlog);
+      const response = await api
+        .post('/api/blogs')
+        .set('Authorization', `bearer ${token}` )
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+
       expect(response.body.id).toContain(0);
     });
 
-    test('With no title field nor url field returns an error code 400', async () => {
+    test('With no title field returns an error code 400', async () => {
+      const allUsers = await helper.getAllUsers();
+      const oneUser = allUsers[0];
+      const token = await helper.getToken('root');
+
       const newBlog = {
         title: '',
         author: 'Edsger W. Dijkstra',
         url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/',
-        likes: null
+        likes: null,
+        userId: oneUser.id
       };
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}` )
         .send(newBlog)
-        .expect(400);
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+    });
+
+    test('With no url field returns an error code 400', async () => {
+      const allUsers = await helper.getAllUsers();
+      const oneUser = allUsers[0];
+      const token = await helper.getToken('root');
+
+      const newBlog = {
+        title: 'Go To Statement Considered Harmful',
+        author: 'Edsger W. Dijkstra',
+        url: '',
+        likes: null,
+        userId: oneUser.id
+      };
+
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `bearer ${token}` )
+        .send(newBlog)
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
     });
   });
 
