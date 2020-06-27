@@ -54,7 +54,7 @@ const AddBlog = ({ handleAddBlog }) => {
           />
         </div>
         <div>
-          <input type="submit" value="Add Blog" />
+          <input type="submit" value="Add Blog" id="AddBlog" />
         </div>
       </form >
     </div>

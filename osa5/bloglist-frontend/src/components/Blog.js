@@ -43,7 +43,7 @@ const Blog = ({ user, blog, addLikes, handleDelete }) => {
             }
           </li>
         </ul>
-        {user.id === blog.user
+        {user.id === blog.user.id
           ? <button className="delblog" id={blog.id} onClick={handleDelete}>Delete Blog</button>
           : <></>
         }
