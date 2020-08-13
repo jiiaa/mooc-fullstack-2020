@@ -24,7 +24,7 @@ import serverService from '../services/serverService';
 const anecdoteReducer = (state = [], action) => {
   switch(action.type) {
     case 'INIT_ANECDOTES':
-      return action.data;
+      return action.data.sort((a, b) => b.votes - a.votes);;
     case 'ADD_ANECDOTE':
       const newAnecdote = action.newAnecdote;
       return state.concat(newAnecdote);
