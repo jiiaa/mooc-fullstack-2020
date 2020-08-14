@@ -12,10 +12,7 @@ const App = () => {
   const notification = useSelector(state => state.notification);
 
   useEffect(() => {
-    serverService
-      .getAll().then(anecdotes => {
-        dispatch(initializeAnecdotes(anecdotes));
-      })
+    dispatch(initializeAnecdotes());
   }, [dispatch]);
 
   return (

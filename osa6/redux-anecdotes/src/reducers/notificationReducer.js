@@ -13,12 +13,14 @@ const notificationReducer = (state = initialState, action) => {
 
 export const setNotification = (content, time) => {
   const timeMs = time * 1000;
-  clearTimeout(timeOut);
   return async dispatch => {
     dispatch({
       type: 'ADD_NOTIFICATION',
       content
     });
+    if (timeOut) {
+      clearTimeout(timeOut);
+    }
     timeOut = await setTimeout(() => {
       dispatch({
         type: 'ADD_NOTIFICATION',

@@ -12,6 +12,10 @@ const Notification = (props) => {
     marginTop: 10,
     marginBottom: 10,
   }
+
+  if (!notification) {
+    return null;
+  }
   
   return (
     <div style={style}>
@@ -25,6 +29,10 @@ const mapStateToProps = (state) => {
     notification: state.notification
   }
 }
+
+// export default connect(
+//   (state) => ({ notification: state.notification })
+// )(Notification);
 
 const ConnectedNotes = connect(
   mapStateToProps

@@ -10,10 +10,14 @@ const AnecdoteList = () => {
   const anecdotes = useSelector(state => state.anecdotes);
   const filter = useSelector(state => state.filter);
 
+  // const anecdotes = useSelector(state => {
+  //   const filter = state.filter.toLowerCase();
+  //   return state.anecdotes.filter(a => a.content.toLowerCase().includes(filter));
+  // });
+
   const vote = id => {
     const votedAnecdote = anecdotes.find(a => a.id === id);
-    const currentVotes = votedAnecdote.votes;
-    const anecdote = {...votedAnecdote, votes: currentVotes + 1 }
+    const anecdote = {...votedAnecdote, votes: votedAnecdote.votes + 1 }
     dispatch(setNotification(`You voted "${anecdote.content}"`, 3));
     dispatch(voteAnecdote(anecdote));
   }

@@ -28,6 +28,7 @@ const anecdoteReducer = (state = [], action) => {
     case 'ADD_ANECDOTE':
       const newAnecdote = action.newAnecdote;
       return state.concat(newAnecdote);
+      // return [...state, actionnewAnecdote];
     case 'VOTE_ANECDOTE':
       const anecdoteVoted = action.anecdote;
       const id = anecdoteVoted.id;
@@ -35,6 +36,9 @@ const anecdoteReducer = (state = [], action) => {
         item.id !== id ? item : anecdoteVoted
       )
       return unsortedAnecdotes.sort((a, b) => b.votes - a.votes);
+      // return state.map(item =>
+      //   item.id !== id ? item : anecdoteVoted
+      // ).sort((a, b) => b.votes - a.votes);
     default:
       return state
   }
