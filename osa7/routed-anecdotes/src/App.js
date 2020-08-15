@@ -1,4 +1,11 @@
 import React, { useState } from 'react'
+import {
+  Switch,
+  Route,
+  Link,
+  useHistory,
+  useRouteMatch
+} from 'react-router-dom';
 
 const Menu = () => {
   const padding = {
@@ -6,9 +13,9 @@ const Menu = () => {
   }
   return (
     <div>
-      <a href='#' style={padding}>anecdotes</a>
-      <a href='#' style={padding}>create new</a>
-      <a href='#' style={padding}>about</a>
+      <Link style={padding} to="/">Anecdotes</Link>
+      <Link style={padding} to="/create">Create New</Link>
+      <Link style={padding} to="/about">About</Link>
     </div>
   )
 }
@@ -17,10 +24,24 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote =>
+        <li key={anecdote.id} >
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>)}
     </ul>
   </div>
 )
+
+const Anecdote = ({ anecdote }) => {
+  console.log('anecdote', anecdote);
+  return (
+    <div>
+      <h2>{anecdote.content} by {anecdote.author}</h2>
+      <div>has {anecdote.votes} votes</div><br/>
+      <div>For more info see <a href={anecdote.info}>{anecdote.info}</a></div>
+    </div>
+  )
+}
 
 const About = () => (
   <div>
@@ -36,13 +57,35 @@ const About = () => (
   </div>
 )
 
-const Footer = () => (
-  <div>
-    Anecdote app for <a href='https://courses.helsinki.fi/fi/tkt21009'>Full Stack -websovelluskehitys</a>.
+const Footer = () => {
+  const margin = {
+    marginTop: 20
+  }
+  return (
+    <div style={margin}>
+      Anecdote app for <a href='https://courses.helsinki.fi/fi/tkt21009'>Full Stack -websovelluskehitys</a>.
 
-    See <a href='https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js'>https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js</a> for the source code.
-  </div>
-)
+      See <a href='https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js'>https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js</a> for the source code.
+    </div>
+  )
+}
+
+const Notification = ({ content }) => {
+  const style = {
+    marginTop: 10,
+    marginBottom: 10,
+    border: 'solid',
+    borderWidth: 1,
+    borderColor: 'green',
+    padding: 10,
+  }
+
+  return (
+    <div style={style}>
+      A new anecdote "{content}" created.
+    </div>
+  )
+}
 
 const CreateNew = (props) => {
   const [content, setContent] = useState('')
@@ -84,6 +127,7 @@ const CreateNew = (props) => {
 }
 
 const App = () => {
+  const history = useHistory();
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
@@ -98,6 +142,20 @@ const App = () => {
       info: 'http://wiki.c2.com/?PrematureOptimization',
       votes: 0,
       id: '2'
+    },
+    {
+      content: 'Before software can be reusable if first has to be usable',
+      author: 'Ralph Johnson',
+      info: 'http://www.adrianmccarthy.com/blog/?p=15',
+      votes: 0,
+      id: '3'
+    },
+    {
+      content: 'When debugging, novices insert corrective code; experts remove defective code.',
+      author: 'Richard Pattis',
+      info: 'http://www.sysprog.net/quotbugs.html',
+      votes: 0,
+      id: '4'
     }
   ])
 
@@ -106,6 +164,11 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(anecdote.content);
+    history.push('/');
+    setTimeout(() => {
+      setNotification('');
+    }, 10000);
   }
 
   const anecdoteById = (id) =>
@@ -122,13 +185,30 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const match = useRouteMatch('/anecdotes/:id');
+  const anecdote = match
+    ? anecdotes.find(item => item.id === match.params.id)
+    : null
+
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
+      {notification && <Notification content={notification} />}
+      <Switch>
+        <Route path="/anecdotes/:id">
+          <Anecdote anecdote={anecdote} />
+        </Route>
+        <Route path="/create">
+          <CreateNew addNew={addNew} />
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/">
+          <AnecdoteList anecdotes={anecdotes} />
+        </Route>
+      </Switch>
       <Footer />
     </div>
   )
