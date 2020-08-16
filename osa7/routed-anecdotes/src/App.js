@@ -6,6 +6,7 @@ import {
   useHistory,
   useRouteMatch
 } from 'react-router-dom';
+import useField from './hooks/index';
 
 const Menu = () => {
   const padding = {
@@ -33,7 +34,6 @@ const AnecdoteList = ({ anecdotes }) => (
 )
 
 const Anecdote = ({ anecdote }) => {
-  console.log('anecdote', anecdote);
   return (
     <div>
       <h2>{anecdote.content} by {anecdote.author}</h2>
@@ -88,19 +88,25 @@ const Notification = ({ content }) => {
 }
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
-
+  const content = useField('text');
+  const author = useField('text');
+  const info = useField('text');
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
+  }
+
+  const handleReset = e => {
+    e.preventDefault();
+    content.onChange(e);
+    author.onChange(e);
+    info.onChange(e);
   }
 
   return (
@@ -108,18 +114,18 @@ const CreateNew = (props) => {
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          content&nbsp;
+          <input {...content} />
         </div>
         <div>
-          author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          author&nbsp;
+          <input {...author} />
         </div>
         <div>
-          url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          url for more info&nbsp;
+          <input {...info} />
         </div>
-        <button>create</button>
+        <button>Create</button><button onClick={handleReset}>Reset</button>
       </form>
     </div>
   )
@@ -169,20 +175,6 @@ const App = () => {
     setTimeout(() => {
       setNotification('');
     }, 10000);
-  }
-
-  const anecdoteById = (id) =>
-    anecdotes.find(a => a.id === id)
-
-  const vote = (id) => {
-    const anecdote = anecdoteById(id)
-
-    const voted = {
-      ...anecdote,
-      votes: anecdote.votes + 1
-    }
-
-    setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
   const match = useRouteMatch('/anecdotes/:id');
