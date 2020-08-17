@@ -29,7 +29,9 @@ const useCountry = (name) => {
   }
 
   useEffect(() => {
-    fetchCountry();
+    if (name !== '') {
+      fetchCountry();
+    }
   }, [name]);
 
   return {
