@@ -13,7 +13,7 @@ const Notification = (props) => {
     marginBottom: 10,
   }
 
-  if (!notification) {
+  if (!props.notification) {
     return null;
   }
   
