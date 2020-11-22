@@ -1,15 +1,15 @@
 import axios from 'axios';
-const baseUrl = '/api/blogs';
 
+const baseUrl = '/api/blogs';
 let token = null;
 
 const setToken = newToken => {
   token = `bearer ${newToken}`;
 };
 
-const getAll = () => {
-  const request = axios.get(baseUrl);
-  return request.then(response => response.data);
+const getAll = async () => {
+  const response = await axios.get(baseUrl);
+  return response.data;
 };
 
 const addBlog = async newBlog => {
@@ -26,6 +26,13 @@ const addLikes = async (likedBlog) => {
   return response.data;
 };
 
+const addComment = async (id, comment) => {
+  const commentUrl = `${baseUrl}/${id}/comments`;
+  const newComment = { comment };
+  const response = await axios.post(commentUrl, newComment )
+  return response.data;
+}
+
 const deleteBlog = async id => {
   const delUrl = `${baseUrl}/${id}`;
   const config = {
@@ -40,5 +47,6 @@ export default {
   getAll,
   addBlog,
   addLikes,
+  addComment,
   deleteBlog
 };

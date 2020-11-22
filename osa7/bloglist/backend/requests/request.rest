@@ -1,13 +1,16 @@
 // Login as a root user with password
-POST http://localhost:3003/api/login
+POST http://localhost:3003/api/users/login
 Content-Type: application/json
 
 {
-  "username": "muumipeikko",
-  "password": "muumimaailma"
+  "username": "root",
+  "password": "erittainsalainen"
 }
 
 ###
+// root erittainsalainen
+// muumipeikko muumimaailma
+// akuankka  ankkalinna
 // Create a new user
 POST http://localhost:3003/api/users
 Content-Type: application/json
@@ -20,7 +23,7 @@ Content-Type: application/json
 
 ###
 // List all users
-GET http://localhost:3003/api/users
+GET http://localhost:3003/api/users/getall
 
 ###
 // List all blogs
@@ -44,3 +47,12 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11d
 // Delete a blog entry with token and userID
 DELETE http://localhost:3003/api/blogs/5ea58d701b63244b88878572
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dW1pcGVpa2tvIiwiaWQiOiI1ZWE1OGM4ZGIwMDQxNDQwNjA0MDE2NjgiLCJpYXQiOjE1ODc5MDc4NDh9.sg9Dvn3u0cc3N15KEKEZCltZxzHMKscFfTGyX2eWdiM
+
+###
+// Add a new comment
+POST http://localhost:3003/api/blogs/5fac30b41c1deb18e4f11d49/comments
+Content-Type: application/json
+
+{
+  "comment": "Ensimmäinen kommentti muumiblogiin Muumi Three"
+}

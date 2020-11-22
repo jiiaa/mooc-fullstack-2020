@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 const AddBlog = ({ handleAddBlog }) => {
@@ -54,7 +55,7 @@ const AddBlog = ({ handleAddBlog }) => {
           />
         </div>
         <div>
-          <input type="submit" value="Add Blog" id="AddBlog" />
+          <Button variant="primary" type="submit" id="AddBlog">Add Blog</Button>
         </div>
       </form >
     </div>

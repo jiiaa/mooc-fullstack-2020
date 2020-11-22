@@ -11,12 +11,14 @@ const Blog = require('../models/blog');
 //   return null;
 // };
 
+// Get all blogs
 blogsRouter.get('', async (req, res) => {
   const blogs = await Blog
     .find({}).populate('user', { username: 1, name: 1 });
   res.json(blogs.map(blog => blog.toJSON()));
 });
 
+// Get a blog by ID
 blogsRouter.get('/:id', async (req, res) => {
   const id = req.params.id;
 
@@ -24,6 +26,7 @@ blogsRouter.get('/:id', async (req, res) => {
   res.json(resBlog.toJSON());
 });
 
+// Add a new blog
 blogsRouter.post('', async (req, res) => {
   const body = req.body;
   // const token = getTokenFrom(req);
@@ -57,6 +60,7 @@ blogsRouter.post('', async (req, res) => {
   res.status(201).json(response.toJSON());
 });
 
+// Delete a blog by ID
 blogsRouter.delete('/:id', async (req, res) => {
   const id = req.params.id;
   const token = req.token;
@@ -77,6 +81,7 @@ blogsRouter.delete('/:id', async (req, res) => {
   }
 });
 
+// Modify a blog e.g. add likes
 blogsRouter.put('/:id', async (req, res) => {
   const id = req.params.id;
   const body = req.body;
@@ -90,6 +95,21 @@ blogsRouter.put('/:id', async (req, res) => {
 
   const updatedBlog = await Blog.findByIdAndUpdate(id, editBlog, { new: true }).populate('user', { username: 1, name: 1 });
   res.json(updatedBlog.toJSON());
+});
+
+// Add a comment to a blog by ID
+blogsRouter.post('/:id/comments', async (req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+
+  const blog = await Blog.findById(id);
+  blog.comments = blog.comments.concat(body.comment);
+  const commentedBlog = await Blog.findByIdAndUpdate(
+    id,
+    { comments: blog.comments },
+    { new: true }
+  );
+  res.json(commentedBlog.toJSON());
 });
 
 module.exports = blogsRouter;

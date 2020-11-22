@@ -1,5 +1,4 @@
 body {
-  max-width: 500px;
   width: 100%;
   margin: 10px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -7,11 +6,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 2;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+button {
+  margin: 6px 0;
 }
 
 .notification {
@@ -24,9 +28,22 @@ code {
   border-radius: 3px;
 }
 
+h2, h3, h4 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
 .blog-section {
   margin: 10px 0;
   line-height: 1.2;
+}
+
+.navbar-nav {
+  align-items: baseline;
+}
+
+.login-button a {
+  color: white;
 }
 
 .bold-text {
