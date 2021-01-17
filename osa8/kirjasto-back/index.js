@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, gql, UserInputError } = require('apollo-server')
 const { v1: uuid } = require('uuid');
 
 let authors = [
@@ -93,11 +93,11 @@ const typeDefs = gql`
   }
 
   type Book {
-    id: ID!
     title: String!
     published: Int!
-    author: String!
+    author: Author!
     genres: [String!]!
+    id: ID!
   }
   type Query {
     authorCount: Int!
@@ -115,7 +115,6 @@ const typeDefs = gql`
     addAuthor(
       name: String!
       born: Int
-      bookCount: Int
     ): Author
     editBorn(
       name: String!
@@ -152,6 +151,11 @@ const resolvers = {
       return book;
     },
     addAuthor: (root, args) => {
+      if (authors.find(a => a.name === args.name)) {
+        throw new UserInputError('Author has already been added', {
+          invalidArgs: args.name,
+        });
+      }
       const author = { ...args, id: uuid() };
       authors = authors.concat(author);
       return author;
