@@ -19,7 +19,6 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const notification = (message) => {
-    console.log('message:', message);
     setErrorMessage(message);
     setTimeout(() => {
       setErrorMessage(null)
@@ -41,6 +40,7 @@ const App = () => {
       <Books show={page === 'books'} />
       <NewBook
         show={page === 'add'}
+        notify={notification}
       />
     </div>
   );

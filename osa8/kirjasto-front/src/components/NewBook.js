@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { NEW_BOOK, ALL_BOOKS } from '../queries';
 
-const NewBook = ({ show }) => {
+const NewBook = ({ show, notify }) => {
   const [title, setTitle] = useState('');
   const [author, setAuhtor] = useState('');
   const [year, setYear] = useState('');
@@ -11,6 +11,9 @@ const NewBook = ({ show }) => {
 
   const [ newBook ] = useMutation(NEW_BOOK, {
     refetchQueries: [ { query: ALL_BOOKS } ],
+    onError: (error) => {
+      notify(error.graphQLErrors[0].message);
+    }
   });
 
   if (!show) {
@@ -21,7 +24,7 @@ const NewBook = ({ show }) => {
     event.preventDefault();
 
     const published = parseInt(year);
-    newBook({ variables: { title, published, author, genres } });
+    newBook({ variables: { title, author, published, genres } });
 
     setTitle('');
     setYear('');
