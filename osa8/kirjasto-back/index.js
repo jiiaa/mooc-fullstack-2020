@@ -94,8 +94,14 @@ const resolvers = {
           invalidArgs: args.name,
         });
       }
-      const author = new Author({ ...args });
-      return author.save();
+      try {
+        const author = new Author({ ...args });
+        return author.save();
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
     },
     editBorn: async (root, args) => {
       const author = await Author.findOne({ name: args.name });

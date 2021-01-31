@@ -9,7 +9,6 @@ const schema = new mongoose.Schema({
   },
   born: {
     type: Number,
-    minlength: 4
   },
 })
 

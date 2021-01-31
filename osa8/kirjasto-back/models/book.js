@@ -9,7 +9,6 @@ const schema = new mongoose.Schema({
   },
   published: {
     type: Number,
-    minlength: 4
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
