@@ -46,7 +46,8 @@ const typeDefs = gql`
     authorCount: Int!
     bookCount: Int!
     allAuthors: [Author!]!
-    allBooks(name: String, genre: String): [Book!]!
+    allBooks(genre: String): [Book!]!
+    allGenres: [String!]!
   }
   type Mutation {
     createUser(
@@ -85,12 +86,17 @@ const resolvers = {
       return Author.find({});
     },
     allBooks: (root, args) => {
+
       if (args.genre) {
         const genreBooks = Book.find({ genres: { $in: [ args.genre ] } }).populate('author');
         return genreBooks;
       } else {
         return Book.find({}).populate('author');
       }
+    },
+    allGenres: () => {
+      const allGenres = Book.find().distinct('genres');
+      return allGenres;
     }
   },
   Author: {
@@ -111,7 +117,7 @@ const resolvers = {
       } catch (error) {
         throw new UserInputError( error.message, {
           invalidArgs: args,
-        })
+        });
       }
     },
 

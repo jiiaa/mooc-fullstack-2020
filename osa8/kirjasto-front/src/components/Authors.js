@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { ALL_AUTHORS, EDIT_YEAR } from '../queries';
 import NewAuthor from './NewAuthor';
 
-const Authors = ({ show, notify }) => {
+const Authors = ({ show, token, notify }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -16,7 +16,7 @@ const Authors = ({ show, notify }) => {
     if (response.data && response.data.editBorn === null) {
       notify('Author not found');
     }
-  }, [response.data]);
+  }, [response.data, notify]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -55,35 +55,39 @@ const Authors = ({ show, notify }) => {
           )}
         </tbody>
       </table>
-      <h2>Set Year of Birth</h2>
-      <form onSubmit={submit}>
-        <div>
-          <label>
-            Name&nbsp;
-            <select
-              value={name}
-              onChange={({ target }) => setName(target.value)}
-            >
-              <option value="">Select author</option>
-              {authors.data.allAuthors.map(a =>
-                <option key={a.name} value={a.name}>{a.name}</option>
-              )}
-            </select>
-          </label>
-        </div>
-        <div>
-          <label>
-            Year&nbsp;
-            <input
-              type="number"
-              value={number}
-              onChange={({ target }) => setNumber(target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">Update author</button>
-      </form>
-      <NewAuthor notify={notify} />
+      {token &&
+        <>
+          <h2>Set Year of Birth</h2>
+          <form onSubmit={submit}>
+            <div>
+              <label>
+                Name&nbsp;
+                <select
+                  value={name}
+                  onChange={({ target }) => setName(target.value)}
+                >
+                  <option value="">Select author</option>
+                  {authors.data.allAuthors.map(a =>
+                    <option key={a.name} value={a.name}>{a.name}</option>
+                  )}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>
+                Year&nbsp;
+                <input
+                  type="number"
+                  value={number}
+                  onChange={({ target }) => setNumber(target.value)}
+                />
+              </label>
+            </div>
+            <button type="submit">Update author</button>
+          </form>
+        </>
+      }
+      {token && <NewAuthor notify={notify} />}
     </div>
   );
 };
