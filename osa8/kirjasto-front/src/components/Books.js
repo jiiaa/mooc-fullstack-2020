@@ -21,6 +21,7 @@ const Books = (props) => {
     return <div>Loading...</div>;
   }
 
+  // TODO/FIX: Take book list out and make a separate component -> use in here and in recommend component
   if (result.data) {
     return (
       <div>

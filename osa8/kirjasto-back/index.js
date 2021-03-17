@@ -1,6 +1,8 @@
-const { ApolloServer, gql, UserInputError, AuthenticationError } = require('apollo-server')
+const { ApolloServer, gql, PubSub, UserInputError, AuthenticationError } = require('apollo-server');
+const pubsub = new PubSub;
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+
 const User = require('./models/user');
 const Author = require('./models/author');
 const Book = require('./models/book');
@@ -16,6 +18,8 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, u
     console.error('Error while connecting to Mongo DB: ', err.message);
   });
 
+// TODO: Move to a separate file
+// module.exports = gql`...` and require
 const typeDefs = gql`
   type User {
     username: String!
@@ -73,8 +77,13 @@ const typeDefs = gql`
       year: Int!
     ): Author
   }
+  type Subscription {
+    bookAdded: Book!
+  }
 `
 
+// TODO: Move to a separate file
+// module.exports = { Query: ...} and require
 const resolvers = {
   Query: {
     me: (root, args, context) => {
@@ -144,6 +153,7 @@ const resolvers = {
       try {
         const book = new Book({ ...args, author: author });
         const res = await book.save();
+        pubsub.publish('BOOK_ADDED', { bookAdded: book });
         return res;
       } catch (error) {
         throw new UserInputError( error.message, {
@@ -181,6 +191,11 @@ const resolvers = {
       };
       return Author.findByIdAndUpdate(author._id, updatedAuthor, { new: true });
     }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+    }
   }
 };
 
@@ -200,6 +215,7 @@ const server = new ApolloServer({
   }
 });
 
-server.listen().then(({ url }) => {
-  console.log(`Server ready at ${url}`)
+server.listen().then(({ url, subscriptionsUrl }) => {
+  console.log(`Server ready at ${url}`);
+  console.log(`Subscription ready at ${subscriptionsUrl}`);
 });

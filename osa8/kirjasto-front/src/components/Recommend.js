@@ -6,12 +6,14 @@ const Recommend = (props) => {
   const me = useQuery(ME);
   const [recomBooks, result] = useLazyQuery(ALL_BOOKS);
 
+  // FIX: Remove useEffect, query ALL_BOOKS and ME -> filter allBooks by me.genre
   useEffect(() => {
     if (me.data && me.data.me !== null) {
       recomBooks({ variables: { genre: me.data.me.favoriteGenre } });
     }
   }, [me]);
 
+  // FIX: if (!props.show || !booksResult.data || !meResult.data)
   if (!props.show) {
     return null;
   }

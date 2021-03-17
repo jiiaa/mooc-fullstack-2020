@@ -1,0 +1,83 @@
+query simple {
+  authorCount
+  bookCount
+}
+query allAuthors {
+  allAuthors {
+    name
+    born
+    bookCount
+  }
+}
+query allBooks($nameToSearch: String) {
+  allBooks(name: $nameToSearch) {
+    title,
+    genres,
+    id,
+    author {born}
+  }
+}
+query filteredBooks($genre: String) {
+  allBooks(genre: $genre) {
+    title,
+    genres,
+    author {name}
+  }
+}
+mutation createUser($username: String!, $favGenre: String!) {
+  createUser(username: $username, favoriteGenre: $favGenre) {
+    username,
+    favoriteGenre
+  }
+}
+mutation login($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    value
+  }
+}
+mutation addBook($title: String!, $author: String!, $published: Int!, $genres: [String!]!) {
+  addBook(
+    title: $title,
+    author: $author,
+    published: $published,
+    genres: $genres
+  ) {
+    title,
+    author {name},
+    published
+  }
+}
+
+mutation addAuthor {
+  addAuthor(
+    name: "Reijo Mäki"
+  ) {
+    name,
+    born,
+    bookCount,
+    id
+  }
+}
+mutation updateAuthor {
+  editBorn(
+    name: "Reijo Mäki",
+    year: 1958
+  ) {
+    name,
+    born
+	}
+}
+
+======
+
+{
+	"username": "jukkapa",
+  "password": "secret",
+  "favGenre": "crime",
+}
+
+======
+
+{
+  "Authorization": "bearer ",
+}
