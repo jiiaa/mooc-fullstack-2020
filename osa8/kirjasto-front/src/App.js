@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
-import { useApolloClient } from '@apollo/client';
+import {
+  useApolloClient,
+  useMutation,
+  useQuery,
+  useSubscription
+} from '@apollo/client';
 
 import Authors from './components/Authors';
 import Books from './components/Books';
 import LoginForm from './components/LoginForm';
 import NewBook from './components/NewBook';
 import Recommend from './components/Recommend';
+import { BOOK_ADDED } from './queries';
 
 const Notification = ({ message }) => {
   if (!message) return null;
@@ -22,6 +28,13 @@ const App = () => {
   const [page, setPage] = useState('authors');
   const [errorMessage, setErrorMessage] = useState(null);
   const client = useApolloClient();
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const data = subscriptionData.data.bookAdded;
+      window.alert(`New book with title ${data.title} was added. Written by ${data.author.name}`);
+    }
+  });
 
   const notification = (message) => {
     setErrorMessage(message);
