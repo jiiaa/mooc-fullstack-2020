@@ -34,7 +34,7 @@ export const ALL_AUTHORS = gql`
     allAuthors {
       name,
       born,
-      bookCount,
+      books,
     }
   }
 `;
@@ -91,7 +91,7 @@ export const NEW_AUTHOR = gql`
     ) {
       name,
       born,
-      bookCount,
+      books,
     }
   }
 `;

@@ -8,7 +8,7 @@ const Author = require('./models/author');
 const Book = require('./models/book');
 
 const JWT_SECRET = 'mooc_fullstack_2020';
-const MONGO_URI = ' mongodb://localhost:27017/kirjasto?retryWrites=true'
+const MONGO_URI = ' mongodb://localhost:27017/library?retryWrites=true'
 console.log('Connecting to ', MONGO_URI,'...');
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
   .then(() => {
@@ -34,8 +34,8 @@ const typeDefs = gql`
   type Author {
     name: String!
     born: Int
+    books: [String]
     id: ID!
-    bookCount: Int
   }
 
   type Book {
@@ -75,6 +75,7 @@ const typeDefs = gql`
     editBorn(
       name: String!
       year: Int!
+      boosk: [String]
     ): Author
   }
   type Subscription {
@@ -108,12 +109,12 @@ const resolvers = {
       return allGenres;
     }
   },
-  Author: {
-    bookCount: async (root) => {
-      const authorBooks = await Book.find({ author: root.id });
-      return authorBooks.length;
-    }
-  },
+  // Author: {
+  //   bookCount: async (root) => {
+  //     const authorBooks = await Book.find({ author: root.id });
+  //     return authorBooks.length;
+  //   }
+  // },
   Mutation: {
     createUser: async (root, args) => {
       const user = new User({
@@ -149,10 +150,18 @@ const resolvers = {
       }
 
       const author = await Author.findOne({ name: args.author });
+      let updateAuthor = {
+        name: author.name,
+        born: author.born,
+        books: author.books,
+      };
 
       try {
         const book = new Book({ ...args, author: author });
         const res = await book.save();
+        updateAuthor.books.push(res._id);
+        updateAuthor.born = 1903;
+        await Author.findByIdAndUpdate(author._id, updateAuthor, { new: true });
         pubsub.publish('BOOK_ADDED', { bookAdded: book });
         return res;
       } catch (error) {
@@ -188,6 +197,7 @@ const resolvers = {
       const updatedAuthor = {
         name: args.name,
         born: args.year,
+        books: author.books,
       };
       return Author.findByIdAndUpdate(author._id, updatedAuthor, { new: true });
     }
