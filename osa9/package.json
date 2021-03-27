@@ -1,0 +1,21 @@
+{
+  "name": "osa9",
+  "version": "1.0.0",
+  "description": "Mooc fullstack open 2021 exercises 9.x",
+  "main": "index.js",
+  "scripts": {
+    "ts-node": "ts-node",
+    "calculateBMI": "ts-node bmiCalculator.ts",
+    "calculateExercises": "ts-node exerciseCalculator.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mooc"
+  ],
+  "author": "Jukka A.",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  }
+}
