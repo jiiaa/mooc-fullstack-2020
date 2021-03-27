@@ -15,6 +15,7 @@
   "author": "Jukka A.",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^14.14.37",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   }

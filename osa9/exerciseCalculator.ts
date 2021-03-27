@@ -48,9 +48,14 @@ const calculateExercises = (
     ratingDescription: description(hoursAverage(hours), target),
   };
 
-
-
   return exerciseResults;
 }
 
-console.log(calculateExercises([3, 1, 2, 4.5, 0 ,3, 1], 2));
+const target: number = Number(process.argv[2]);
+const hours: number[] = [];
+
+for (let i = 3; i < process.argv.length; i++) {
+  hours.push(Number(process.argv[i]));
+}
+
+console.log(calculateExercises(hours, target));
