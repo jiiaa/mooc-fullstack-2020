@@ -24,7 +24,7 @@ interface bmiResult {
 // }
 
 const calculateBMI = (h: number, w: number): bmiResult => {
-  const index: number = Number((w / ((h / 100) * (h / 100))).toFixed(1));
+  const index = Number((w / ((h / 100) * (h / 100))).toFixed(1));
   if (index < 18.5) {
     return {
       height: h,
@@ -43,8 +43,8 @@ const calculateBMI = (h: number, w: number): bmiResult => {
       weight: w,
       bmi: 'Overweight (heavy weight)',
     };
-  };
-}
+  }
+};
 
 export default calculateBMI;
 
