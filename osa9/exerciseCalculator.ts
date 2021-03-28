@@ -1,11 +1,41 @@
 interface CalculatedExeHours {
-  periodLength: number,
-  trainingDays: number,
-  success: boolean,
-  rating: number,
-  ratingDescription: string,
-  target: number,
-  average: number
+  periodLength: number;
+  trainingDays: number;
+  success: boolean;
+  rating: number;
+  ratingDescription: string;
+  target: number;
+  average: number;
+}
+
+interface validatedValues {
+  target: number;
+  hours: Array<number>;
+}
+
+const validateArgs = (args: Array<string>): validatedValues => {
+  console.log(args[2], '/', args[3]);
+  if (args[2] === undefined || args[3] === undefined) {
+    throw new Error('Values are missing');
+  }
+
+  const target: number = Number(args[2]);
+  if (isNaN(target)) {
+    throw new Error('Target is invalid');
+  }
+
+  const hours: number[] = [];
+  for (let i = 3; i < args.length; i++) {
+    if (isNaN(Number(args[i]))) {
+      throw new Error('Hours are invalid');
+    } else {
+      hours.push(Number(process.argv[i]));
+    }
+  }
+  return {
+    target,
+    hours
+  }
 }
 
 const calculateExercises = (
@@ -14,7 +44,7 @@ const calculateExercises = (
 ): CalculatedExeHours => {
 
   const hoursAverage = (data: Array<number>): number => {
-    const average: number = hours.reduce((sum, curVal) => sum + curVal, 0) / hours.length;
+    const average: number = data.reduce((sum, curVal) => sum + curVal, 0) / data.length;
     return average;
   }
 
@@ -51,11 +81,9 @@ const calculateExercises = (
   return exerciseResults;
 }
 
-const target: number = Number(process.argv[2]);
-const hours: number[] = [];
-
-for (let i = 3; i < process.argv.length; i++) {
-  hours.push(Number(process.argv[i]));
+try {
+  const { target, hours } = validateArgs(process.argv);
+  console.log(calculateExercises(hours, target));
+} catch (e) {
+  console.error('Ooops, something was not right: ', e.message);
 }
-
-console.log(calculateExercises(hours, target));

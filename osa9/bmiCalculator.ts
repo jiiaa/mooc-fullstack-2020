@@ -1,16 +1,56 @@
-const calculateBMI = (h: number, m: number): string => {
-  const hSquare: number = h / 100;
-  const index: number = Number((m / (hSquare * hSquare)).toFixed(1));
+interface bmiResult {
+  height: number;
+  weight: number;
+  bmi: string;
+}
+
+// interface indexParameters {
+//   height: number;
+//   weight: number;
+// }
+
+// const validateArguments = (args: Array<string>): indexParameters => {
+//   if (args.length < 4) throw new Error('Parameter(s) missing.');
+//   if (args.length > 4) throw new Error('Too many arguments.');
+
+//   if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+//     return {
+//       height: Number(args[2]),
+//       weight: Number(args[3])
+//     }
+//   } else {
+//     throw new Error('Provided values were not numbers.');
+//   }
+// }
+
+const calculateBMI = (h: number, w: number): bmiResult => {
+  const index: number = Number((w / ((h / 100) * (h / 100))).toFixed(1));
   if (index < 18.5) {
-    return (`Underweight (unhealthy weight), index is ${index}`);
+    return {
+      height: h,
+      weight: w,
+      bmi: 'Underweight (unhealthy weight)'
+    };
   } else if (index >= 18.5 && index <= 25) {
-    return (`Normal (healthy weight), index is ${index}`);
-  } else if (index > 25) {
-    return (`Overweight (heavy weight), index is ${index}`);
+    return {
+      height: h,
+      weight: w,
+      bmi: 'Normal (healthy weight)',
+    };
+  } else {
+    return {
+      height: h,
+      weight: w,
+      bmi: 'Overweight (heavy weight)',
+    };
   };
 }
 
-const height: number = Number(process.argv[2]);
-const mass: number = Number(process.argv[3]);
+export default calculateBMI;
 
-console.log(calculateBMI(height, mass));
+// try {
+//   const { height, weight } = validateArguments(process.argv);
+//   console.log(calculateBMI(height, weight));
+// } catch (e) {
+//   console.error('Oops, something went wrong: ', e.message);
+// }
