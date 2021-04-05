@@ -24,14 +24,14 @@ const getPublicPatients = (): PatientPublic[] => {
 const findPatientById = (id: string): Patient | undefined => {
   const patient = patients.find(p => p.id === id);
   return patient;
-}
+};
 
 // Add new patient
 const addNewPatient = (entry: NewPatientEntry): Patient => {
   const newPatientEntry = {
     id: uuid(),
     ...entry
-  }
+  };
 
   patients.push(newPatientEntry);
   return newPatientEntry;

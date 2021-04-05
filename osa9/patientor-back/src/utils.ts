@@ -22,6 +22,7 @@ const parseDate = (date: unknown): string => {
   return date;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isGender = (gender: any): gender is Gender => {
   return Object.values(Gender).includes(gender);
 };
@@ -31,7 +32,7 @@ const parseGender = (gender: unknown): Gender => {
     throw new Error('Incorrect or missing gender: ' + gender);
   }
   return gender;
-}
+};
 
 type Fields = {
   name: unknown,
