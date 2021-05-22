@@ -5,7 +5,7 @@ import { Container, Icon, List } from 'semantic-ui-react';
 
 import { Patient } from '../types';
 import { apiBaseUrl } from '../constants';
-import { useStateValue } from '../state';
+import { useStateValue, setPatient } from '../state';
 
 const PatientInfoPage = () => {
   const { id } = useParams<{ id: string}>();
@@ -17,7 +17,8 @@ const PatientInfoPage = () => {
         const { data: patientInfoFromApi } = await axios.get<Patient>(
           `${apiBaseUrl}/patients/${id}`,
         );
-        dispatch({ type: "SET_PATIENT", payload: patientInfoFromApi } );
+        // dispatch({ type: "SET_PATIENT", payload: patientInfoFromApi });
+        dispatch(setPatient(patientInfoFromApi));
       } catch (e) {
         console.error(e);
       }

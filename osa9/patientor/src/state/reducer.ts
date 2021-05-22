@@ -1,6 +1,27 @@
 import { State } from "./state";
 import { Patient } from "../types";
 
+export const setPatientList = (patientList: Patient[]): Action => {
+  return {
+    type: "SET_PATIENT_LIST",
+    payload: patientList,
+  };
+};
+
+export const setPatient = (patient: Patient): Action => {
+  return {
+    type: "SET_PATIENT",
+    payload: patient,
+  };
+};
+
+export const addPatient = (newPatient: Patient): Action => {
+  return {
+    type: "ADD_PATIENT",
+    payload: newPatient,
+  };
+};
+
 export type Action =
   | {
       type: "SET_PATIENT_LIST";
