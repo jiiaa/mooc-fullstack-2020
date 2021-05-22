@@ -1,6 +1,6 @@
 import { v1 as uuid } from 'uuid';
 import patientsData from '../../data/patients.json';
-import { Patient, PatientPublic, NewPatientEntry } from '../types';
+import { Patient, PublicPatient, NewPatientEntry } from '../types';
 
 const patients: Array<Patient> = patientsData as Array<Patient>;
 
@@ -10,7 +10,7 @@ const getAllPatients = (): Array<Patient> => {
 };
 
 // Return all patients as json but omit ssn data
-const getPublicPatients = (): PatientPublic[] => {
+const getPublicPatients = (): PublicPatient[] => {
   return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id,
     name,

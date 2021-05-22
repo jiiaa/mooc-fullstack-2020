@@ -5,26 +5,32 @@ export enum Gender {
 }
 
 export interface Diagnose {
-  code: string,
-  name: string,
+  code: string;
+  name: string;
   latin?: string
 }
 
+export interface Entry {
+}
+
 export interface Patient {
-  id: string,
-  name: string,
-  dateOfBirth: string,
-  ssn: string,
-  gender: Gender,
-  occupation: string
+  id: string;
+  name: string;
+  ssn: string;
+  occupation: string;
+  gender: Gender;
+  dateOfBirth: string;
+  entries: Entry[]
 }
 
 export interface PatientPublic {
-  id: string,
-  name: string,
-  dateOfBirth: string,
-  gender: Gender,
-  occupation: string
+  id: string;
+  name: string;
+  occupation: string;
+  gender: Gender;
+  dateOfBirth: string
 }
 
 export type NewPatientEntry = Omit<Patient, 'id'>;
+
+export type PublicPatient = Omit<Patient, 'ssn' | 'entries' >
