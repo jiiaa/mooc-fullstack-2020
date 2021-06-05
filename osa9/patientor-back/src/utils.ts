@@ -1,4 +1,4 @@
-import { Gender, NewPatientEntry } from './types';
+import { Entry, Gender, NewPatientEntry } from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -9,6 +9,17 @@ const parseString = (entryValue: unknown): string => {
     throw new Error('Incorrect or missing value: ' + entryValue);
   }
   return entryValue;
+};
+
+const isArray = (arrayA: unknown): arrayA is Entry[] => {
+  return Array.isArray(arrayA) || arrayA instanceof Array;
+};
+
+const parseArray = (entries: unknown): Entry[] => {
+  if (!entries || !isArray(entries)) {
+    throw new Error('Incorrect or missing value: ' + entries);
+  }
+  return entries;
 };
 
 const isDate = (date: string): boolean => {
@@ -39,7 +50,8 @@ type Fields = {
   dateOfBirth: unknown,
   ssn: unknown,
   gender: unknown,
-  occupation: unknown
+  occupation: unknown,
+  entries: unknown
 };
 
 const toNewPatientEntry = ({
@@ -47,14 +59,16 @@ const toNewPatientEntry = ({
   dateOfBirth,
   ssn,
   gender,
-  occupation
+  occupation,
+  entries,
 }: Fields): NewPatientEntry => {
   const newPatient: NewPatientEntry = {
     name: parseString(name),
     dateOfBirth: parseDate(dateOfBirth),
     ssn: parseString(ssn),
     gender: parseGender(gender),
-    occupation: parseString(occupation)
+    occupation: parseString(occupation),
+    entries: parseArray(entries),
   };
   return newPatient;
 };
