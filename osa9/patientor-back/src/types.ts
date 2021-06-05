@@ -49,7 +49,7 @@ export interface OccupationalHealthCareEntry extends BaseEntry {
 
 export interface HospitalEntry extends BaseEntry {
   type: "Hospital";
-  discharge: Discharge
+  discharge: Discharge;
 }
 
 export type Entry =
