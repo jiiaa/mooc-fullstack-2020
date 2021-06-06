@@ -10,7 +10,6 @@ type EntryProps = {
 
 const EntriesList = ({ entry }: EntryProps) => {
   const [{ diagnoseList }] = useStateValue();
-  console.log('entry:', entry);
   return (
     <>
       <p>{entry.description}</p>
