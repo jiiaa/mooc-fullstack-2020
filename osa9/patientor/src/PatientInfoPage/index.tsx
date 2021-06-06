@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Container, Icon, List } from 'semantic-ui-react';
 
+import EntriesList from './EntriesList';
 import { Patient, Entry } from '../types';
 import { apiBaseUrl } from '../constants';
 import { useStateValue, setPatient } from '../state';
@@ -30,7 +31,6 @@ const PatientInfoPage = () => {
   return (
     <div className="App">
           {Object.values(patientsFull).map((patient: Patient) => {
-            console.log('patient:', patient);
             if (patient.id === id) {
               return (
                 <Container text key={patient.id}>
@@ -41,18 +41,9 @@ const PatientInfoPage = () => {
                     <List.Item>Occupation: {patient.occupation}</List.Item>
                   </List>
                   <h4>Diagnosis Entries</h4>
-                  {patient.entries && patient.entries.map((entry: Entry) => {
-                    return (
-                      <>
-                        <p key={entry.id}>{entry.description}</p>
-                        <List bulleted>
-                          {entry.diagnosisCodes && entry.diagnosisCodes.map((code: string) =>
-                            <List.Item key={code}>{code}</List.Item>
-                        )}
-                        </List>
-                      </>
-                    );
-                  })}
+                  {patient.entries && patient.entries.map((entry: Entry) =>
+                    <EntriesList key={entry.id} entry={entry} />
+                  )}
                 </Container>
               );
             }
